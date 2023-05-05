@@ -1,0 +1,13 @@
+.music-posts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .music-post {
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 5px;
+  }
+  

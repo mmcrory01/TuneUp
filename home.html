@@ -109,6 +109,113 @@
 			<div class="icon"><img src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-contact-512.png" width="25"></div>
 		</div>
 	</div>
-</body>
-
 	  
+	<form action="/post" method="POST" enctype="multipart/form-data" id="post-form">
+		<input type="hidden" name="username" id="username" value="{{username}}">
+		<input type="hidden" name="selected-song-input" id="selected-song-input" value="">
+		<input type="hidden" id="artist-input" name="artist" value="">
+		<input type="hidden" id="song-input" name="song" value="">
+		<label for="song-select">Select a Song:</label>
+		<select name="selected-song" id="song-select">
+		  <!-- Populate options dynamically from Last.fm -->
+		</select>
+		<br>
+		<label for="search-input">Search for a Song:</label>
+		<input type="text" name="search" id="search-input">
+		<br>
+		<label for="post-caption">Caption:</label>
+		<input type="text" name="caption" id="post-caption">
+		<br>
+		<input type="submit" value="Post" onclick="return submitForm();">
+	  </form>
+	  
+	  <img id="image-preview">
+	  
+	  <script>
+		// Make a GET request to Last.fm API to retrieve top tracks
+		fetch('http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=2cca08af90c4ebcfd0c720e520019dd0&format=json&limit=10')
+		  .then(response => response.json())
+		  .then(data => {
+			const select = document.getElementById('song-select');
+			data.tracks.track.forEach(track => {
+			  const option = document.createElement('option');
+			  option.value = track.url;
+			  option.textContent = track.name + ' - ' + track.artist.name;
+			  option.setAttribute('data-track', JSON.stringify(track)); // Set the track object as a data attribute
+			  select.appendChild(option);
+			});
+		  });
+	  
+		 // Listen for changes to the song select element and update the image preview
+		 document.getElementById('song-select').addEventListener('change', event => {
+			const selectedOption = event.target.options[event.target.selectedIndex];
+			const track = JSON.parse(selectedOption.getAttribute('data-track'));
+			document.getElementById('selected-song-input').value = track.url;
+			document.getElementById('artist-input').value = track.artist;
+			document.getElementById('song-input').value = track.name;
+
+  // Make a GET request to Last.fm API to retrieve more information about the track
+  fetch(`http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=2cca08af90c4ebcfd0c720e520019dd0&format=json&mbid=${track.mbid}&autocorrect=1`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.track && data.track.album) { // Check if track and album properties exist
+        const imageUrl = data.track.album.image[2]['#text'];
+        imagePreview.src = imageUrl;
+      } else {
+        // Use a default image if there is no album image available
+        imagePreview.src = 'default-image.jpg';
+      }
+    });
+});
+
+function submitForm() {
+  const form = document.getElementById('post-form');
+  const formData = new FormData(form);
+  const songUrl = formData.get('selected-song-input');
+  const selectedOption = document.querySelector(`[value="${songUrl}"]`);
+  const track = JSON.parse(selectedOption.getAttribute('data-track'));
+  const songName = track.name;
+  const artistName = track.artist.name;
+  const caption = document.getElementById('post-caption').value;
+
+  console.log(`Selected song URL: ${songUrl}`);
+
+  // Validate the selected song
+  if (!songUrl) {
+    console.error('No song selected');
+    return false;
+  }
+
+  formData.set('selected-song-input', songUrl);
+  formData.append('song', songName);
+  formData.append('artist', artistName);
+  formData.append('caption', caption);
+  formData.append('username', username);
+
+  fetch('/post', {
+    method: 'POST',
+    body: formData,
+  })
+    .then(response => {
+      if (response.ok) {
+        console.log('Post submitted successfully');
+        // Clear the form inputs
+        document.getElementById('song-select').selectedIndex = 0;
+        document.getElementById('post-caption').value = '';
+        document.getElementById('image-preview').src = '';
+      } else {
+        console.log('Error submitting post');
+      }
+    })
+    .catch(error => {
+      console.error('Error submitting post:', error);
+    });
+
+  return false;
+}
+
+
+
+</script>
+  
+</body>	  
