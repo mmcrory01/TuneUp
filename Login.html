@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Instagram Login</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			background-color: #FAFAFA;
+			font-family: Arial, sans-serif;
+		}
+		.container {
+			margin: 0 auto;
+			max-width: 350px;
+			padding: 20px;
+			text-align: center;
+			border: 1px solid #ECECEC;
+			background-color: #FFF;
+			box-shadow: 0px 0px 10px #ECECEC;
+			border-radius: 3px;
+			margin-top: 100px;
+		}
+		h1 {
+			font-size: 28px;
+			margin-bottom: 20px;
+		}
+		input[type="text"], input[type="password"] {
+			background-color: #FAFAFA;
+			border: 1px solid #ECECEC;
+			padding: 10px;
+			width: 100%;
+			margin-bottom: 15px;
+			font-size: 16px;
+			border-radius: 3px;
+		}
+		input[type="submit"] {
+			background-color: #3897F0;
+			color: #FFF;
+			border: none;
+			padding: 10px;
+			font-size: 16px;
+			width: 100%;
+			cursor: pointer;
+			border-radius: 3px;
+			margin-top: 10px;
+		}
+		input[type="submit"]:hover {
+			background-color: #3367D6;
+		}
+		p {
+			margin-top: 20px;
+			font-size: 14px;
+			color: #999;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Instagram</h1>
+		<form action="/login" method="POST">
+		  <label for="username">Username:</label>
+		  <input type="text" id="username" name="username"><br>
+		
+		  <label for="password">Password:</label>
+		  <input type="password" id="password" name="password"><br>
+		
+		  <input type="submit" value="Login">
+		</form>
+		<p>Don't have an account? <a href="signup.html">Sign up</a></p>
+	  </div>	  
+</body>
+<script>
+	if (!document.cookie.includes('loggedIn')) {
+	  window.location.href = '/login.html';
+	}
+  </script>  
+</html>

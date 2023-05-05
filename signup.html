@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sign Up</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(function() {
+			$('form').submit(function(e) {
+				e.preventDefault();
+				$.post('/signup', $(this).serialize(), function(data) {
+					if (data.error === 'username_taken') {
+						// Display error message
+						alert('Username is already taken.');
+					} else {
+						// Redirect to home page
+						window.location.href = '/home.html';
+					}
+				});
+			});
+		});
+	</script>
+	<meta name="viewport" content="width=device-width, initial-scale=0.5">
+	<style>
+		body {
+			background-color: #FAFAFA;
+			font-family: Arial, sans-serif;
+		}
+		.container {
+			margin: 0 auto;
+			max-width: 350px;
+			padding: 20px;
+			text-align: center;
+			border: 1px solid #ECECEC;
+			background-color: #FFF;
+			box-shadow: 0px 0px 10px #ECECEC;
+			border-radius: 3px;
+			margin-top: 100px;
+		}
+		h1 {
+			font-size: 28px;
+			margin-bottom: 20px;
+		}
+		input[type="text"], input[type="email"], input[type="password"] {
+			background-color: #FAFAFA;
+			border: 1px solid #ECECEC;
+			padding: 10px;
+			width: 100%;
+			margin-bottom: 15px;
+			font-size: 16px;
+			border-radius: 3px;
+		}
+		input[type="submit"] {
+			background-color: #3897F0;
+			color: #FFF;
+			border: none;
+			padding: 10px;
+			font-size: 16px;
+			width: 100%;
+			cursor: pointer;
+			border-radius: 3px;
+			margin-top: 10px;
+		}
+		input[type="submit"]:hover {
+			background-color: #3367D6;
+		}
+		p {
+			margin-top: 20px;
+			font-size: 14px;
+			color: #999;
+		}
+		.form-group {
+			text-align: left;
+		}
+		.form-group label {
+			font-weight: bold;
+			margin-bottom: 5px;
+			display: block;
+		}
+		.error {
+			color: red;
+			margin-top: 5px;
+			text-align: left;
+		}
+	</style>
+</head>
+<body>
+	<form action="/signup" method="POST">
+		<div class="form-group">
+		  <label for="name">Name</label>
+		  <input type="text" name="name" id="name" placeholder="Enter your name" required>
+		  <span class="error" id="name-error"></span>
+		</div>
+		<div class="form-group">
+		  <label for="email">Email</label>
+		  <input type="email" name="email" id="email" placeholder="Enter your email" required>
+		  <span class="error" id="email-error"></span>
+		</div>
+		<div class="form-group">
+		  <label for="username">Username</label>
+		  <input type="text" name="username" id="username" placeholder="Choose a username" required>
+		  <span class="error" id="username-error"></span>
+		</div>
+		<div class="form-group">
+		  <label for="password">Password</label>
+		  <input type="password" name="password" id="password" placeholder="Choose a password" required minlength="6">
+		  <span class="error" id="password-error"></span>
+		</div>
+		<input type="submit" value="Sign Up">
+	  </form>	  
+</body>
